@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  mysqldb:
+    container_name: ${MYSQL_CONTAINER}
+    image: mysql:8.0.29
+    env_file: .env
+    ports:
+      - ${MYSQL_LOCAL_PORT}:${MYSQL_DOCKER_PORT}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    networks:
+      - internal-network
+
+  cloud-gateway:
+    container_name: ${CLOUD_GATEWAY_CONTAINER}
+    image: ${USERNAME}/${CLOUD_GATEWAY_CONTAINER}:latest
+    env_file: .env
+    ports:
+      - ${CLOUD_GATEWAY_PORT}:${CLOUD_GATEWAY_PORT}
+    environment:
+      DATABASE: http://${DATABASE_CONTAINER}:${DATABASE_PORT}
+      CRAWL_SERVICE: http://${CRAWL_SERVICE_CONTAINER}:${CRAWL_SERVICE_PORT}
+    networks:
+      - internal-network
+
+  database:
+    depends_on:
+      - mysqldb
+    links:
+      - mysqldb
+    container_name: ${DATABASE_CONTAINER}
+    image: ${USERNAME}/${DATABASE_CONTAINER}:latest
+    restart: on-failure:5
+    env_file: .env
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_PORT}
+    environment:
+        MYSQL_HOST: ${MYSQL_CONTAINER}
+        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USERNAME: ${MYSQL_USERNAME}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - internal-network
+  crawl-service:
+    depends_on:
+      - mysqldb
+      - database
+    links:
+      - mysqldb
+      - database
+    container_name: ${CRAWL_SERVICE_CONTAINER}
+    image: ${USERNAME}/${CRAWL_SERVICE_CONTAINER}:latest
+    restart: on-failure:5
+    env_file: .env
+    environment:
+      MYSQL_HOST: ${MYSQL_CONTAINER}
+      MYSQL_PORT: ${MYSQL_DOCKER_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    driver: bridge
