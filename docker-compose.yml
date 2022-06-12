@@ -14,7 +14,7 @@ services:
 
   cloud-gateway:
     container_name: ${CLOUD_GATEWAY_CONTAINER}
-    image: ${USERNAME}/${CLOUD_GATEWAY_CONTAINER}:latest
+    image: trivip002/${CLOUD_GATEWAY_CONTAINER}:latest
     env_file: .env
     ports:
       - ${CLOUD_GATEWAY_PORT}:${CLOUD_GATEWAY_PORT}
@@ -30,7 +30,7 @@ services:
     links:
       - mysqldb
     container_name: ${DATABASE_CONTAINER}
-    image: ${USERNAME}/${DATABASE_CONTAINER}:latest
+    image: trivip002/${DATABASE_CONTAINER}:latest
     restart: on-failure:5
     env_file: .env
     ports:
@@ -51,7 +51,7 @@ services:
       - mysqldb
       - database
     container_name: ${CRAWL_SERVICE_CONTAINER}
-    image: ${USERNAME}/${CRAWL_SERVICE_CONTAINER}:latest
+    image: trivip002/${CRAWL_SERVICE_CONTAINER}:latest
     restart: on-failure:5
     env_file: .env
     environment:
