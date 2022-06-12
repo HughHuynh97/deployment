@@ -24,6 +24,15 @@ services:
     networks:
       - internal-network
 
+  admin-ui:
+    container_name: ${ADMIN_UI_CONTAINER}
+    image: trivip002/${ADMIN_UI_CONTAINER}:latest
+    env_file: .env
+    ports:
+      - ${ADMIN_UI_PORT}:${ADMIN_UI_PORT}
+    networks:
+      - internal-network
+
   database:
     depends_on:
       - mysqldb
