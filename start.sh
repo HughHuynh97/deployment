@@ -1,1 +1,1 @@
-docker-compose up
+docker-compose -f deployment.yml up

@@ -45,11 +45,11 @@ services:
     ports:
       - ${DATABASE_PORT}:${DATABASE_PORT}
     environment:
-        MYSQL_HOST: ${MYSQL_CONTAINER}
-        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        MYSQL_USERNAME: ${MYSQL_USERNAME}
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_CONTAINER}
+      MYSQL_PORT: ${MYSQL_DOCKER_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - internal-network
   crawl-service:
