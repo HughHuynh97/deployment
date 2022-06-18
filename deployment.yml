@@ -61,6 +61,8 @@ services:
       - database
     container_name: ${CRAWL_SERVICE_CONTAINER}
     image: trivip002/${CRAWL_SERVICE_CONTAINER}:latest
+    ports:
+      - 8085:8085
     restart: on-failure:5
     env_file: .env
     environment:

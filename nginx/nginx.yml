@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: webserver
+    volumes:
+      - ./nginx:/etc/nginx/
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+  shiny:
+    image: mdancho/shinyauth:latest
+    container_name: shiny
+    restart: unless-stopped
+    expose:
+      - 3838
