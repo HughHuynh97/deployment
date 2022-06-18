@@ -1,18 +1,30 @@
-version: '3.7'
+version: '3.8'
 
 services:
   nginx:
     image: nginx:latest
     container_name: webserver
     volumes:
-      - ./nginx:/etc/nginx/
+      - ./nginx.conf:/etc/nginx/nginx.conf
     restart: unless-stopped
     ports:
       - 80:80
       - 443:443
+    extra_hosts:
+      - "www.hugh.pal.net.vn:127.0.0.1"
+    networks:
+      - proxy-network
+
   shiny:
     image: mdancho/shinyauth:latest
     container_name: shiny
     restart: unless-stopped
     expose:
       - 3838
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    driver: bridge
+    name: internal-network

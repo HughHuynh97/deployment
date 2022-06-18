@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  mysqldb:
+    container_name: ${MYSQL_CONTAINER}
+    image: mysql:8.0.29
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=tripro123
+      - MYSQL_DATABASE=qat
+    networks:
+      - internal-network
+
+  admin-ui:
+    container_name: admin-ui
+    image: trivip002/admin-ui:latest
+    ports:
+      - 4200:4200
+    networks:
+      - internal-network
+
+  database:
+    depends_on:
+      - mysqldb
+    links:
+      - mysqldb
+    container_name: database
+    image: trivip002/database:latest
+    restart: on-failure:5
+    ports:
+      - 8081:8081
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: tripro123
+      MYSQL_DATABASE: qat
+    networks:
+      - internal-network
+
+  crawl-service:
+    depends_on:
+      - mysqldb
+      - database
+    links:
+      - mysqldb
+      - database
+    container_name: crawl-service
+    image: trivip002/crawl-service:latest
+    ports:
+      - 8082:8082
+    restart: on-failure:5
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: tripro123
+      MYSQL_DATABASE: qat
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    external: true
