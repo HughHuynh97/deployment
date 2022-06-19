@@ -59,6 +59,27 @@ services:
     networks:
       - internal-network
 
+  admin-service:
+    depends_on:
+      - mysqldb
+      - database
+    links:
+      - mysqldb
+      - database
+    container_name: admin-service
+    image: trivip002/admin-service:latest
+    ports:
+      - 8083:8083
+    restart: on-failure:5
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: tripro123
+      MYSQL_DATABASE: qat
+    networks:
+     - internal-network
+
 networks:
   internal-network:
     external: true
